@@ -110,7 +110,7 @@ namespace Project_Cinema_PRN231.Controllers
                     Room r1 = _context.Rooms.FirstOrDefault(x => x.Code == request.Code && r.BuildingId == buildingId && x.IsDeleted == false);
                     if (r1 != null)
                     {
-                        return BadRequest("Room Code already exsits!");
+                        return BadRequest("Room Code already aaaaaaaaaaaaaaaaaaa!");
                     }
                 }
             }
