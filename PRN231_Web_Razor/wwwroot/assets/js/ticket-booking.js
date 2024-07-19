@@ -77,13 +77,14 @@ $(document).ready(function () {
 
 $("#showtime-btn123").click(async function () {
     var buildingId = buildingIdSelected;
-    var filmId = filmCalenderIdSelected;
+    var filmCalenderId = filmCalenderIdSelected;
     var roomId = roomIdSelected;
+    var filmId = document.getElementById("filmId1");
 
     console.log(buildingId + " " + filmId);
 
     try {
-        var response = await fetch("http:localhost:5000/api/SeatBooking/getSeatMap/" + buildingId + "/" + filmId + "/" + roomId, {
+        var response = await fetch("http:localhost:5000/api/SeatBooking/getSeatMap/" + buildingId + "/" + filmCalenderId + "/" + roomId, {
             method: 'GET'
         });
 
@@ -169,10 +170,10 @@ $("#seat_choosing139").click(async function () {
 
 })
 function loadDataToTiket(responseDetail, storedSeat) {
-    
+
     var seatArray = storedSeat.split(",");
     $("#buildingName").text(responseDetail.buildingName);
-    $("#movieImg").attr("src", "assets/images/" + responseDetail.movieImage); // Use .attr for image source
+    $("#movieImg").attr("src", responseDetail.movieImage); // Use .attr for image source
     $("#roomName").text(responseDetail.roomName);
     $("#movieName").text(responseDetail.movieName);
     $("#seat").text(storedSeat);
@@ -184,8 +185,10 @@ function loadDataToTiket(responseDetail, storedSeat) {
 $("#confirm-btn").click(async function () {
     var buildingId = buildingIdSelected
     console.log(buildingId)
+    var filmId = document.getElementById("filmId1").value;
+    console.log("filmId fozen: " + filmId)
     // Call your API here using AJAX
-    var responseData = await fetch("http://localhost:5000/api/Room/getShowtime/" + buildingId, {
+    var responseData = await fetch("http://localhost:5000/api/Room/getShowtime1/" + buildingId + "/" + filmId, {
         method: 'GET'
     })
         .then((response) => response.json())
@@ -235,8 +238,16 @@ function loadDataToShowTime(responseData) {
 }
 
 async function dateChange(event) {
-    // Lấy giá trị ngày từ sự kiện
-    const selectedDate = event.target.value;
+    const selectedDate = event.target.value
+    var filmId = document.getElementById("filmId1").value;
+    const selectedDate1 = new Date(event.target.value);
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);  // Reset time to midnight for comparison
+
+    if (selectedDate1 < currentDate) {
+        alert("Không chọn ngày trong quá khứ");
+        return;
+    }
 
     console.log('Ngày được chọn:', selectedDate);
 
@@ -245,7 +256,7 @@ async function dateChange(event) {
     var buildingId = buildingIdSelected
     console.log(buildingId)
     // Call your API here using AJAX
-    var responseData = await fetch("http://localhost:5000/api/Room/getShowtime/" + buildingId + "/" + selectedDate, {
+    var responseData = await fetch("http://localhost:5000/api/Room/getShowtime/" + buildingId + "/" + selectedDate + "/" + filmId, {
         method: 'GET'
     })
         .then((response) => response.json())

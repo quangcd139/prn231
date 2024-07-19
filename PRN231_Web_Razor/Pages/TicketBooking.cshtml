@@ -5,6 +5,7 @@
     Layout = "_LayoutWithoutFooter";
     var buildings = ViewData["buildings"] as List<BuildingDto>;
     var sessionUserId = HttpContext.Session.GetString("userId");
+    var filmId = ViewData["filmid"];
 }
 <link rel="stylesheet" type="text/css" href="assets/css/style-starter.css">
 <link rel="stylesheet" href="https://npmcdn.com/flickity@2/dist/flickity.css">
@@ -34,6 +35,7 @@
                         <li id="step4" class="not_active">E-Ticket</li>
                     </ul>
                     <br>
+                    <input type="text" value="@filmId" id="filmId1" />
                     <!-- building -->
                     <fieldset>
                         <!-- Payment Page -->
@@ -48,9 +50,11 @@
                                                     <div class="payment-row payment">
                                                         <div class="time-btn">
                                                             <input hidden type="text" value="@sessionUserId" id="userId" />
+                                                            
+
                                                             @foreach (var building in buildings)
                                                             {
-                                                                <button class="btn btn-secondary" onclick="GetBuildingID(@building.Id, event)">@building.Name</button>
+                                                                <button class="btn btn-secondary" onclick="GetBuildingID(@building.Id, event)">@building.Name-@building.Address</button>
                                                             }
 
                                                         </div>
@@ -103,7 +107,7 @@
                                     <p id="movieName" class="movie-title">Movie Name</p>
                                 </div>
                                 <div class="poster">
-                                    <img id="movieImg" style="width:200px;height:200px;" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/only-god-forgives.jpg"
+                                    <img id="movieImg" style="width:200px;height:200px;" src="~/assets/images/film/sci-fi.jpg"
                                          alt="Movie: Only God Forgives" />
                                 </div>
                                 <div class="info">

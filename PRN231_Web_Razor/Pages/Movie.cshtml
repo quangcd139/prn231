@@ -3,6 +3,8 @@
 @using Project_Cinema_PRN231.domain.category
 @{
     var categories = ViewData["categories"] as List<CategoryDto>;
+    var sessionUserId = HttpContext.Session.GetString("userId");
+
 }
 <style>
     img {
@@ -102,7 +104,7 @@
                         <div class="item vhny-grid">
                             <div class="box16 mb-0">
                                 <figure>
-                                    <img class="img-fluid" src="assets/images/@lb.Image" alt="">
+                                    <img class="img-fluid" src="@lb.Image" alt="">
                                 </figure>
                                 @{
                                     var nameSplit = @lb.Name.Replace(" ", "");
@@ -135,7 +137,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body" id="dynamic-content">
-                                                <img src="assets/images/@lb.Image" class="img-fluid modalimg" alt="" />
+                                                <img src="@lb.Image" class="img-fluid modalimg" alt="" />
                                                 <p>
                                                     <h3>Release Date&nbsp;:@lb.ReleaseYear</h3>
                                                     <h3>Venue&nbsp;:Cg @lb.Director </h3>
@@ -151,10 +153,20 @@
                                                 </p>
                                             </div>
                                             <div class="bookbtn">
-                                                <button type="button" class="btn btn-success"
-                                                        onclick="location.href='TicketBooking';">
-                                                    Book
-                                                </button>
+                                                @if (sessionUserId == null)
+                                                {
+                                                    <button type="button" class="btn btn-success"
+                                                            onclick="location.href='Login';">
+                                                        Book
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-success"
+                                                    onclick="location.href='TicketBooking?filmId=@lb.Id';">
+                                                        Book
+                                                    </button>
+                                                }
                                             </div>
                                         </div>
                                     </div>

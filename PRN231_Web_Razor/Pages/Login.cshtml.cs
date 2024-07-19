@@ -30,8 +30,8 @@ namespace PRN231_Web_Razor.Pages
 			var response = await client.SendAsync(request);
 			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
-				
-				return RedirectToPage("Login");
+				var errorMessage = "username or password is incorrect";
+				return RedirectToPage("Login", new { error = errorMessage });
 			}
 
 			var responseContent = response.Content.ReadFromJsonAsync<SysUserDto>().Result;

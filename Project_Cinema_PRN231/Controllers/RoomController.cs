@@ -30,9 +30,9 @@ namespace Project_Cinema_PRN231.Controllers
             return Ok(listRooms);
         }
 
-        [HttpGet("getShowtime/{buildingId}")]
+        [HttpGet("getShowtime1/{buildingId}/{filmId}")]
         [EnableQuery]
-        public IActionResult GetByBuildingId(int buildingId)
+        public IActionResult GetByBuildingId(int buildingId,int filmId)
         {
             var listBuilding = _context.Rooms.Include(r => r.FilmCalenders).Where(x => x.IsDeleted == false && x.BuildingId == buildingId).Select(
                s => new
@@ -41,14 +41,14 @@ namespace Project_Cinema_PRN231.Controllers
                    RoomCode = s.Code,
                    RoomName = s.Name,
                    BuildingId = buildingId,
-                   FilmCalenders = s.FilmCalenders.Where(fc => fc.Date.Day == DateTime.Now.Day).ToList()
+                   FilmCalenders = s.FilmCalenders.Where(fc => fc.Date.Day == DateTime.Now.Day && fc.FilmId== filmId).ToList()
                }
                ).ToList();
             return Ok(listBuilding);
         }
-        [HttpGet("getShowtime/{buildingId}/{date}")]
+        [HttpGet("getShowtime/{buildingId}/{date}/{filmId}")]
         [EnableQuery]
-        public IActionResult GetByBuildingIdAndDate(int buildingId,DateTime date)
+        public IActionResult GetByBuildingIdAndDate(int buildingId,DateTime date,int filmId)
         {
             var listBuilding = _context.Rooms.Include(r => r.FilmCalenders)
                 .Where(x => x.IsDeleted == false && x.BuildingId == buildingId )
@@ -59,7 +59,7 @@ namespace Project_Cinema_PRN231.Controllers
                    RoomCode = s.Code,
                    RoomName = s.Name,
                    BuildingId = buildingId,
-                   FilmCalenders = s.FilmCalenders.Where(fc => fc.Date.Equals(date)).ToList()
+                   FilmCalenders = s.FilmCalenders.Where(fc => fc.Date.Equals(date) && fc.FilmId== filmId).ToList()
                }
                ).ToList();
             return Ok(listBuilding);

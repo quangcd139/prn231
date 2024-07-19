@@ -36,6 +36,10 @@
                 <div class="card-header">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Add a new Film Calender</button>
                     <button class="btn btn-primary" data-bs-toggle="modal" onclick="exportData()">Export data</button>
+                    <form method="post" asp-page-handler="ImportFile" enctype="multipart/form-data">
+                        <input type="file" name="csvFile" />
+                        <button type="submit">Import</button>
+                    </form>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
@@ -65,12 +69,12 @@
                                     <td>@item.Price</td>
                                     <td>
                                         <!--Modal trigger-->
-                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clicking' data-calenderid="@item.Id" data-filmid="@item.FilmName" data-roomid1="@item.RoomId" data-datecalender="@item.Date.ToString("dd/MM/yyyy")" data-starttimecalender="@item.StartTime" data-endtimecalender="@item.EndTime" data-pricecalender="@item.Price">
+                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clicking' data-calenderid="@item.Id" data-filmid="@item.FilmName" data-roomid1="@item.RoomId" data-datecalender="@item.Date.ToString("yyyy-MM-dd")" data-starttimecalender="@item.StartTime" data-endtimecalender="@item.EndTime" data-pricecalender="@item.Price">
                                             <i class="fa fa-pencil"></i>
 
                                         </a>
                                         &nbsp;
-                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-calenderid="@item.Id" data-filmid="@item.FilmName" data-roomid="@item.RoomName" data-datecalender="@item.Date.ToString("dd/MM/yyy")" data-starttimecalender="@item.StartTime" data-endtimecalender="@item.EndTime" data-pricecalender="@item.Price">
+                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-calenderid="@item.Id" data-filmid="@item.FilmName" data-roomid="@item.RoomName" data-datecalender="@item.Date.ToString("dd/MM/yyyy")" data-starttimecalender="@item.StartTime" data-endtimecalender="@item.EndTime" data-pricecalender="@item.Price">
 
                                             <i class="fa fa-eye"></i>
                                         </a>
@@ -107,7 +111,7 @@
                     </div>
                     <div class="form-group">
                         <label for="category" class="col-form-label">Room Name:</label>
-                        <select class="form-control" id="roomName1" name="category">
+                        <select class="form-control" id="roomName1" name="roomId">
                             @foreach (var item in roomList)
                             {
                                 <option value="@item.Id">@item.Name</option>
@@ -120,19 +124,19 @@
                     </div> *@
                     <div class="form-group">
                         <label for="date" class="col-form-label">Date:</label>
-                        <input type="text" class="form-control" id="date1" name="trailerUrl">
+                        <input type="date" class="form-control" id="date1" name="date">
                     </div>
                     <div class="form-group">
                         <label for="quantity" class="col-form-label">Start time:</label>
-                        <input type="text" class="form-control" id="startTime1" name="releaseYear">
+                        <input type="text" class="form-control" id="startTime1" name="startTime">
                     </div>
                     <div class="form-group ">
                         <label for="rate" class="col-form-label">End time:</label>
-                        <input type="text" class="form-control" id="endTime1" name="director">
+                        <input type="text" class="form-control" id="endTime1" name="endTime">
                     </div>
                     <div class="form-group">
                         <label for="description" class="col-form-label">price:</label>
-                        <input type="text" class="form-control" id="price1" name="description">
+                        <input type="text" class="form-control" id="price1" name="price">
                     </div>
 
                 </div>
@@ -150,7 +154,6 @@
 <div class="modal hide fade" id="modalView">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-
 
             <!-- Modal Header -->
             <div class="modal-header">
@@ -273,6 +276,7 @@
 <script>
     $(document).ready(function () {
         $(".clicking").click(function () { // Click to only happen on announce links
+            $("#filmId").val($(this).data('calenderid'));
             $("#filmname1").val($(this).data('filmid'));
             $("#roomName1").val($(this).data('roomid1'));
             $("#date1").val($(this).data('datecalender'));
@@ -308,7 +312,7 @@
 </script>
 <script>
     function exportData() {
-        fetch('/Admin/FilmManagement?handler=ExportFile')
+        fetch('/Admin/FilmCalenderManagement?handler=ExportFile')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Export failed');
@@ -319,7 +323,7 @@
                 var url = window.URL.createObjectURL(blob);
                 var a = document.createElement('a');
                 a.href = url;
-                a.download = 'films.csv';
+                a.download = 'filmCalender.csv';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);

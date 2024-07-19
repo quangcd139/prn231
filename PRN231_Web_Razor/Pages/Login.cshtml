@@ -3,6 +3,7 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
 	Layout = null;
+	var errorMessage = Request.Query["error"].ToString();
 }
 
 <link rel="stylesheet" type="text/css" href="assets/css/as-alert-message.min.css">
@@ -30,6 +31,7 @@
 	<div class="form-container sign-in-container">
 		<form name="sign-in-form" method="post" style="color: var(--theme-title);" asp-action="Login"
 			  onsubmit="return signInValidateForm()">
+			
 			<h1>Sign in</h1>
 			<div class="social-container">
 				<a href="#" class="social" style="color: var(--theme-title);"><i class="fab fa-facebook-f"></i></a>
@@ -39,10 +41,14 @@
 				<a href="#" class="social" style="color: var(--theme-title);"><i class="fab fa-linkedin-in"></i></a>
 			</div>
 			<span>or use your account</span>
-			<input name="sign-in-email" type="text" placeholder="Email" />
+			<input name="sign-in-email" type="text" placeholder="Username" />
 			<input name="sign-in-passwd" type="password" placeholder="Password" />
 			<a href="#">Forgot your password?</a>
 			<button type="submit">Sign In</button>
+			@if (!string.IsNullOrEmpty(errorMessage))
+			{
+				<p style="color:red">@errorMessage</p>
+			}
 		</form>
 	</div>
 	<div class="overlay-container">
