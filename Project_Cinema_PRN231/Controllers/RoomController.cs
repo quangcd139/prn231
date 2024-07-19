@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using Project_Cinema_PRN231.domain.room;
 using Project_Cinema_PRN231.model;
+using System.Xml.Linq;
 
 namespace Project_Cinema_PRN231.Controllers
 {
@@ -89,15 +90,14 @@ namespace Project_Cinema_PRN231.Controllers
                 BuildingId = buildingId,
                 IsDeleted = false,
                 CreatedAt = new DateTime(),
-                CreatedBy = request.CreatedBy
             });
             return Ok("Created successfull");
         }
 
-        [HttpPost("{buildingId}/update/{roomId}")]
-        public IActionResult updateRoom(int buildingId, UpdatedRoomRequest request, int roomId)
+        [HttpPost("update")]
+        public IActionResult updateRoom(UpdatedRoomRequest request)
         {
-            Room r = _context.Rooms.FirstOrDefault(r => r.Id == roomId && r.BuildingId == buildingId && r.IsDeleted == false);
+            Room r = _context.Rooms.FirstOrDefault(r => r.Id == request.Id && r.BuildingId == request.BuildingId && r.IsDeleted == false);
 
             if (r == null)
             {
@@ -107,20 +107,17 @@ namespace Project_Cinema_PRN231.Controllers
             {
                 if (!request.Code.Equals(r.Code))
                 {
-                    Room r1 = _context.Rooms.FirstOrDefault(x => x.Code == request.Code && r.BuildingId == buildingId && x.IsDeleted == false);
+                    Room r1 = _context.Rooms.FirstOrDefault(x => x.Code == request.Code && r.BuildingId == request.BuildingId && x.IsDeleted == false);
                     if (r1 != null)
                     {
-                        return BadRequest("Room Code already aaaaaaaaaaaaaaaaaaa!");
+                        return BadRequest("Room Code already exsits!");
                     }
                 }
             }
-            _context.Rooms.Update(new Room
-            {
-                Code = request.Code,
-                Name = request.Name,
-                BuildingId = buildingId,
-                UpdatedAt = new DateTime(),
-            });
+            r.Code = request.Code;
+            r.Name = request.Name;
+            r.BuildingId = request.BuildingId;
+            _context.Rooms.Update(r);
             _context.SaveChanges();
 
             return Ok("Update successfull");
@@ -140,6 +137,35 @@ namespace Project_Cinema_PRN231.Controllers
             });
             _context.SaveChanges();
             return Ok();
+        }
+
+        [HttpPost("add")]
+        public IActionResult addRoom(CreatedRoomRequest request)
+        {
+            if (request.Code == null || request.Code.Trim() == "")
+            {
+                return BadRequest("Code must be not null!!");
+            }
+            if (request.Name == null || request.Name.Trim() == "")
+            {
+                return BadRequest("Name must be not null!!");
+            }
+            var room = _context.Rooms.FirstOrDefault(s => s.Code == request.Code);
+
+            if(room != null)
+            {
+                return BadRequest("Room Code already exists!");
+            }
+            Room r = new Room();
+            r.Code = request.Code;
+            r.Name = request.Name;
+            r.BuildingId = request.BuildingId;
+            r.CreatedBy = "Admin";
+
+            _context.Rooms.Add(r);
+            _context.SaveChanges();
+
+            return Ok("Add successfully");
         }
     }
 }

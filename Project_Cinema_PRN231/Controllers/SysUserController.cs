@@ -58,6 +58,19 @@ namespace Project_Cinema_PRN231.Controllers
             return Ok();
 
         }
+        [HttpGet("getAll")]
+        public IActionResult getAll()
+        {
+            var listAll = _context.SysUsers.Where(s => s.IsDeleted == false).Select(s => new
+            {
+                Id = s.Id,
+                UserName = s.UserName,
+                FullName = s.FullName,
+                PhoneNumber = s.PhoneNumber,
+            });
+
+            return Ok(listAll);
+        }
 
     }
 }

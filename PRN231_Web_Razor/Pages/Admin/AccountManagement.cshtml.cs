@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Project_Cinema_PRN231.domain.room;
 using Project_Cinema_PRN231.model;
 
 namespace Library.Pages.Admin
@@ -17,11 +18,14 @@ namespace Library.Pages.Admin
         public SysUser User { get; set; }
         public IList<SysUser> Users { get; set; }
 
-        //public void OnGet()
-        //{
-        //    Users = _unitOfWork.UserRepository.GetAll();
+          public void OnGet()
+          {
+            HttpClient _httpClient = new HttpClient();
+            HttpResponseMessage response = _httpClient.GetAsync("http://localhost:5000/api/SysUser/getAll").Result;
+            var SysUsers = response.Content.ReadFromJsonAsync<List<SysUser>>().Result;
+            ViewData["SysUser"] = SysUsers.ToList();
 
-        //}
+        }
 
         //public IActionResult OnPostEditUser()
         //{
