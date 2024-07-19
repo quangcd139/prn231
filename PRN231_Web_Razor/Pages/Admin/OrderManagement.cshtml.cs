@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Project_Cinema_PRN231.domain.orderdetail;
+using Project_Cinema_PRN231.model;
 
 namespace Library.Pages.Admin
 {
@@ -14,10 +16,14 @@ namespace Library.Pages.Admin
         //}
         //public IList<Order> Orders { get; set; }
 
-        //public void OnGet()
-        //{
-        //    Orders = _unitOfWork.OrderRepository.GetAllOrdersNav();
-        //}
+        public void OnGet()
+        {
+            HttpClient _httpClient = new HttpClient();
+            HttpResponseMessage response = _httpClient.GetAsync("http://localhost:5000/api/OrderDetail/getAllOrder").Result;
+            var OrderDetailDto = response.Content.ReadFromJsonAsync<List<OrderDetailDto>>().Result;
+            ViewData["OrderDetailDto"] = OrderDetailDto.ToList();
+
+        }
 
         //public IActionResult OnGetOrderDetails(int orderId)
         //{

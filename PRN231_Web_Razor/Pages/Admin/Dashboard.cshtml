@@ -1,9 +1,16 @@
 ﻿@page
 @using System.Text.Json
+@using Project_Cinema_PRN231.domain.libraryfilm
+@using Project_Cinema_PRN231.domain.orderdetail
+@using Project_Cinema_PRN231.domain.room
+@using Project_Cinema_PRN231.model
 @model Library.Pages.Admin.DashboardModel
 @{
     Layout = "Shared/_LayoutAdmin";
-    var x = JsonSerializer.Serialize(Model.OrdersByMonth);
+    var countUser = ViewData["SysUser"] as List<SysUser>;
+    var countLibraryFilmDTO = ViewData["LibraryFilmDTO"] as List<LibraryFilmDTO>;
+    var countRoomDto = ViewData["RoomDto"] as List<RoomDto>;
+    var countOrderDetailDto = ViewData["OrderDetailDto"] as List<OrderDetailDto>;
 }
 <div id="main" style="background-color: #f2f7ff;">
     <header class="mb-3">
@@ -30,8 +37,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8">
-                                        <h6 class="text-muted font-semibold">Total Books</h6>
-                                        <h6 class="font-extrabold mb-0">@Model.CountBook</h6>
+                                        <h6 class="text-muted font-semibold">Total Film</h6>
+                                        <h6 class="font-extrabold mb-0">@countLibraryFilmDTO.Count</h6>
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +55,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <h6 class="text-muted font-semibold">Total Users</h6>
-                                        <h6 class="font-extrabold mb-0">@Model.CountUser</h6>
+                                        <h6 class="font-extrabold mb-0">@countUser.Count</h6>
                                     </div>
                                 </div>
                             </div>
@@ -64,8 +71,26 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8">
-                                        <h6 class="text-muted font-semibold">Orders Today</h6>
-                                        <h6 class="font-extrabold mb-0">@Model.CountOrder</h6>
+                                        <h6 class="text-muted font-semibold">Total Orders</h6>
+                                        <h6 class="font-extrabold mb-0">@countOrderDetailDto.Count</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-4 col-md-6">
+                        <div class="card">
+                            <div class="card-body px-3 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="stats-icon green">
+                                            <i class="iconly-boldAdd-User"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h6 class="text-muted font-semibold">Total Room</h6>
+                                        <h6 class="font-extrabold mb-0">@countRoomDto.Count</h6>
                                     </div>
                                 </div>
                             </div>
@@ -73,7 +98,7 @@
                     </div>
                     
                 </div>
-                <div class="row">
+               @*  <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
@@ -84,7 +109,7 @@
                                 <script src="/js/apexcharts.min.js"></script>
                                 <script>
                                     var codesJS = new Array();
-                                    var codes = @Html.Raw(x);
+                                    var codes = @Html.Raw(countOrderDetailDto);
                                     if (codes != null) {
                                         for (var i = 0; i < codes.length; i++) {
                                             var code = codes[i];
@@ -129,6 +154,6 @@
             <!-- het nhan-->
         </section>
     </div>
-
+ *@
 
 </div>

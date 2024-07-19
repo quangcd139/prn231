@@ -92,5 +92,35 @@ namespace Project_Cinema_PRN231.Controllers
             return Ok(id);
 
         }
+
+        [HttpGet("getAllOrder")]
+        public IActionResult GetAllOrder()
+        {
+            var list = _context.OrderDetails
+                    .Include(s => s.FilmCalender)
+                    .Include(s => s.Lot)
+                    .Include(s => s.SeatBooking)
+                    .Select(f => new
+                    {
+                        Id = f.Id,
+                        UserName = f.User.UserName,
+                        BuildingName = f.Lot.Building.Name,
+                        RoomName = f.Lot.Room.Name,
+                        MovieName = f.FilmCalender.Film.Name,
+                        MovieImage = f.FilmCalender.Film.Image,
+                        Lot = f.Lot.Row + "_" + f.Lot.Column,
+                        Price = f.FilmCalender.Price,
+                        BookingDate = f.CreatedAt,
+                        StartTime = f.FilmCalender.StartTime,
+                        EndTime = f.FilmCalender.EndTime,
+                        BarCode = f.BarCode,
+                        TimeDuration = f.FilmCalender != null ?
+                    f.FilmCalender.EndTime
+                    - f.FilmCalender.StartTime
+                    : TimeSpan.Zero
+                    });
+
+            return Ok(list);
+        }
     }
 }

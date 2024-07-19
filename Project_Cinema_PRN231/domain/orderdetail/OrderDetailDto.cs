@@ -2,6 +2,7 @@
 {
     public class OrderDetailDto
     {
+        public int? Id { get; set; }
         public string BuildingName { get; set; }
         public string RoomName { get; set; }
         public string MovieName { get; set; }
@@ -15,6 +16,8 @@
         public TimeSpan EndTime { get; set; }
         public string BarCode { get; set; }
         public string TimeDuration { get;set; }
+
+        public string? UserName { get; set; }
 
 
     }

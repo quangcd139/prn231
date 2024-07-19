@@ -179,15 +179,14 @@
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    @* <div class="form-group">
-                    <label asp-for="Category.CategoryName" class="col-form-label"></label>
-                    <input asp-for="Category.CategoryName" class="form-control">
-
-                    </div><div class="form-group">
-                    <label asp-for="Image" class="col-form-label"></label>
-                    <input asp-for="Image" class="form-control">
-
-                    </div> *@
+                    <div class="form-group">
+                        <label for="roomcode" class="col-form-label">Room Code:</label>
+                        <input type="text" class="form-control" id="createRoomCode" name="createRoomCode" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="roomname" class="col-form-label">Room Name:</label>
+                        <input type="text" class="form-control" id="createRoomName" name="createRoomName" required>
+                    </div>
                 </div>
 
                 <!-- Modal footer -->
