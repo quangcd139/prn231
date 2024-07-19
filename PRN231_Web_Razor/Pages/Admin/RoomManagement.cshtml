@@ -1,0 +1,261 @@
+﻿@page
+@using Project_Cinema_PRN231.domain.room
+@model PRN231_Web_Razor.Pages.Admin.RoomManagementModel
+@{
+    Layout = "Shared/_LayoutAdmin";
+    var roomDtosList = ViewData["RoomDto"] as List<RoomDto>;
+}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Room Management</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Room Management</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    @* <form asp-page="/Admin/CategoryManagement" asp-page-handler="ExportFile" method="POST"> *@
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Add a new room</button>
+                    <button onclick="exportData()" class="btn btn-primary">Export file</button><br /><br />
+
+                    <form method="post" asp-page-handler="ImportFile" enctype="multipart/form-data">
+                        <input type="file" name="csvFile" />
+                        <button type="submit">Import</button>
+                    </form>
+                </div>
+
+                @*  @if (!string.IsNullOrEmpty(Model.ImportMessage))
+                {
+                <p>@Model.ImportMessage</p>
+                } *@
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>Room ID</th>
+                                <th>Room Code</th>
+                                <th>Room Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in roomDtosList)
+                            {
+                                <tr>
+
+                                    <td>@item.Id</td>
+                                    <td>@item.Code</td>
+                                    <td>
+                                        @item.Name
+                                    </td>
+                                    <td>
+                                        <!--Modal trigger-->
+                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clickingEdit' data-roomid="@item.Id" data-roomcode="@item.Code" data-roomname="@item.Name">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        &nbsp;
+                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-roomid="@item.Id" data-roomcode="@item.Code" data-roomname="@item.Name">
+
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+
+
+                                        <!-- End Modal trigger -->
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+</div>
+
+
+<div class="modal hide fade" id="modalEdit">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-page="/Admin/RoomManagement" asp-page-handler="EditRoom" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="roomid" name="id">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Room</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="roomcode" class="col-form-label">Room Code:</label>
+                        <input type="text" class="form-control" id="roomcode" name="code" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="roomname" class="col-form-label">Room Name:</label>
+                        <input type="text" class="form-control" id="roomname" name="name">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalView">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">User Information</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="roomcode" class="col-form-label">Room Code:</label>
+                    <input type="text" class="form-control" id="roomcode1" name="code" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="roomname" class="col-form-label">Room Name:</label>
+                    <input type="text" class="form-control" id="roomname1" name="name" disabled>
+                </div>
+                @* <div class="form-group">
+                    <label for="image" class="col-form-label">Image:</label>
+                    <img class="form-control" id="imageview" name="image" style="height: fit-content" />
+                </div> *@
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalAdd">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add a new room</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form asp-page="/Admin/RoomManagement" asp-page-handler="AddRoom" method="POST" enctype="multipart/form-data">
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    @* <div class="form-group">
+                    <label asp-for="Category.CategoryName" class="col-form-label"></label>
+                    <input asp-for="Category.CategoryName" class="form-control">
+
+                    </div><div class="form-group">
+                    <label asp-for="Image" class="col-form-label"></label>
+                    <input asp-for="Image" class="form-control">
+
+                    </div> *@
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Add" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clickingEdit").click(function () { // Click to only happen on announce links
+            $("#image").attr("src", $(this).data('imageurl'));
+            $("#roomname").val($(this).data('roomname'));
+            $("#roomcode").val($(this).data('roomcode'));
+            $("#roomid").val($(this).data('roomid'));
+            $('#modalEdit').modal('show');
+        });
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        $(".clickingView").click(function () { // Click to only happen on announce links
+            $("#roomcode1").val($(this).data('roomcode'));
+            $("#roomname1").val($(this).data('roomname'));
+            $("#roomid").val($(this).data('roomid'));
+
+            //fetch
+
+
+            $('#modalView').modal('show');
+        });
+    });
+</script>
+
+<script>
+    function exportData() {
+        fetch('/Admin/RoomManagement?handler=ExportFile')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'data.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again later.');
+            });
+    }
+</script>

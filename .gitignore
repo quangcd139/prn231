@@ -1,0 +1,68 @@
+# Visual Studio files
+.vs/
+
+# Binaries
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+
+# Packages
+packages/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio code files
+.vscode/
+
+# Resharper files
+_ReSharper*/
+*.resharper
+
+# Rider files
+.idea/
+
+# Node.js
+node_modules/
+
+# Temporary files
+[Tt]emp/
+[Tt]est[Tt]estdata/
+
+# Build results
+*.dll
+*.pdb
+*.exe
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio Code
+.vscode/
+
+# SQLite database files
+*.sqlite
+
+# Custom
+Thumbs.db
+Desktop.ini

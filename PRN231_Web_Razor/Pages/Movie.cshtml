@@ -1,0 +1,333 @@
+﻿@page
+@model PRN231_Web_Razor.Pages.MovieModel
+@using Project_Cinema_PRN231.domain.category
+@{
+    var categories = ViewData["categories"] as List<CategoryDto>;
+}
+<style>
+    img {
+        width: 270px;
+        height: 400px;
+    }
+
+    .video-icon {
+        cursor: pointer;
+        font-size: 24px;
+    }
+
+    .modalVideoUrl {
+        margin-top: 200px;
+        display: none;
+        position: fixed;
+        z-index: 3;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+
+        .modalVideoUrl .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 0;
+            width: 80%;
+            max-width: 700px;
+        }
+
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .video-container {
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%;
+        position: relative;
+    }
+
+        .video-container iframe {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+</style>
+<div id="videoModal" class="modalVideoUrl">
+    <div class="modal-content">
+        <span class="close" onclick="closeVideoModal()">&times;</span>
+        <div class="video-container">
+            <iframe id="videoFrame" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+</div>
+<div class="w3l-breadcrumbs">
+    <nav id="breadcrumbs" class="breadcrumbs">
+        <div class="container page-wrapper">
+            <a href="Index">Home</a> » <span class="breadcrumb_last" aria-current="page">movies</span>
+        </div>
+    </nav>
+</div>
+
+<!--grids-sec1-->
+<section class="w3l-grids">
+    <div class="grids-main py-5">
+        <div class="container py-lg-4">
+            @foreach (var c in categories)
+            {
+                <div class="headerhny-title">
+                    <div class="w3l-title-grids">
+                        <div class="headerhny-left">
+                            <h3 class="hny-title">@c.Name</h3>
+                        </div>
+                        <div class="headerhny-right text-lg-right">
+                            <h4><a class="show-title" href="movies.html">Show all</a></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="w3l-populohny-grids">
+                    @foreach (var lb in c.LibraryFilms)
+                    {
+                        <div class="item vhny-grid">
+                            <div class="box16 mb-0">
+                                <figure>
+                                    <img class="img-fluid" src="assets/images/@lb.Image" alt="">
+                                </figure>
+                                @{
+                                    var nameSplit = @lb.Name.Replace(" ", "");
+                                }
+                                <a href=".@nameSplit" data-toggle="modal">
+                                    <div class="box-content">
+                                        <h3 class="title">@lb.Name</h3>
+                                        <h4>
+                                            <span class="post">
+                                                <span class="fa fa-clock-o"> </span> @lb.TimeDuration
+                                            </span>
+
+                                            <span class="post fa fa-heart text-right"></span>
+                                        </h4>
+                                    </div>
+                                    <button onclick="showVideoModal('@lb.TrailerUrl')">
+                                        <span class="fa fa-play video-icon" aria-hidden="true"></span>
+                                    </button>
+                                </a>
+                                <!-- Modal -->
+                                <div class="modal fade @nameSplit" id="myModal" tabindex="-1" role="dialog"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content" id="mymodalcontent">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="exampleModalLongTitle">DETAILS</h4>
+                                                <button type="button" class="closebtn" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" id="dynamic-content">
+                                                <img src="assets/images/@lb.Image" class="img-fluid modalimg" alt="" />
+                                                <p>
+                                                    <h3>Release Date&nbsp;:@lb.ReleaseYear</h3>
+                                                    <h3>Venue&nbsp;:Cg @lb.Director </h3>
+                                                </p>
+                                                <h4>About Movie</h4>
+                                                <p>
+                                                    @lb.Description
+                                                </p>
+                                                <h4>Star Cast</h4>
+                                                <p>
+                                                    Vidyut Jammwal as Commando Karanveer Singh Dogra (Karan)<br />
+                                                    Adah Sharma as Inspector Bhavna Reddy<br />
+                                                </p>
+                                            </div>
+                                            <div class="bookbtn">
+                                                <button type="button" class="btn btn-success"
+                                                        onclick="location.href='TicketBooking';">
+                                                    Book
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- modal end -->
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            }
+
+        </div>
+        <div class="button-center text-center mt-3">
+            <a href="#" class="btn view-button">
+                View all <span class="fa fa-angle-double-right ml-2"
+                               aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<script src="assets/js/jquery-3.3.1.min.js"></script>
+<!--/theme-change-->
+<script src="assets/js/theme-change.js"></script>
+<script src="assets/js/owl.carousel.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.owl-four').owlCarousel({
+            loop: true,
+            margin: 20,
+            nav: false,
+            responsiveClass: true,
+            autoplay: false,
+            autoplayTimeout: 5000,
+            autoplaySpeed: 1000,
+            autoplayHoverPause: false,
+            responsive: {
+                0: {
+                    items: 1,
+                    nav: false
+                },
+                480: {
+                    items: 2,
+                    nav: true
+                },
+                667: {
+                    items: 2,
+                    nav: true
+                },
+                1000: {
+                    items: 2,
+                    nav: true
+                }
+            }
+        })
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $('.owl-two').owlCarousel({
+            loop: true,
+            margin: 40,
+            nav: false,
+            responsiveClass: true,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            autoplaySpeed: 1000,
+            autoplayHoverPause: false,
+            responsive: {
+                0: {
+                    items: 1,
+                    nav: false
+                },
+                480: {
+                    items: 2,
+                    nav: true
+                },
+                667: {
+                    items: 2,
+                    margin: 20,
+                    nav: true
+                },
+                1000: {
+                    items: 3,
+                    nav: true
+                }
+            }
+        })
+    })
+</script>
+<!-- script for owlcarousel -->
+<!-- disable body scroll which navbar is in active -->
+<script>
+    $(function () {
+        $('.navbar-toggler').click(function () {
+            $('body').toggleClass('noscroll');
+        })
+    });
+</script>
+<!-- disable body scroll which navbar is in active -->
+<!--/MENU-JS-->
+<script>
+    $(window).on("scroll", function () {
+        var scroll = $(window).scrollTop();
+
+        if (scroll >= 80) {
+            $("#site-header").addClass("nav-fixed");
+        } else {
+            $("#site-header").removeClass("nav-fixed");
+        }
+    });
+
+    //Main navigation Active Class Add Remove
+    $(".navbar-toggler").on("click", function () {
+        $("header").toggleClass("active");
+    });
+    $(document).on("ready", function () {
+        if ($(window).width() > 991) {
+            $("header").removeClass("active");
+        }
+        $(window).on("resize", function () {
+            if ($(window).width() > 991) {
+                $("header").removeClass("active");
+            }
+        });
+    });
+</script>
+<script src="assets/js/easyResponsiveTabs.js"></script>
+
+<script>
+    function showVideoModal(videoUrl) {
+        var modal = document.getElementById("videoModal");
+        var iframe = document.getElementById("videoFrame");
+        iframe.src = videoUrl;
+        modal.style.display = "block";
+        var modal1 = document.getElementById("modal");
+        modal1.style.display = "none";
+    }
+
+    function closeVideoModal() {
+        var modal = document.getElementById("videoModal");
+        var iframe = document.getElementById("videoFrame");
+        iframe.src = "";
+        modal.style.display = "none";
+    }
+
+    // Close the modal when clicking outside the modal content
+    window.onclick = function (event) {
+        var modal = document.getElementById("videoModal");
+        if (event.target == modal) {
+            closeVideoModal();
+        }
+    }
+</script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //Horizontal Tab
+        $('#parentHorizontalTab').easyResponsiveTabs({
+            type: 'default', //Types: default, vertical, accordion
+            width: 'auto', //auto or any width like 600px
+            fit: true, // 100% fit in a container
+            tabidentify: 'hor_1', // The tab groups identifier
+            activate: function (event) { // Callback function if tab is switched
+                var $tab = $(this);
+                var $info = $('#nested-tabInfo');
+                var $name = $('span', $info);
+                $name.text($tab.text());
+                $info.show();
+            }
+        });
+    });
+</script>
+
+<script src="assets/js/bootstrap.min.js"></script>

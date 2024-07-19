@@ -1,0 +1,198 @@
+﻿@page
+@model PRN231_Web_Razor.Pages.TicketBookingModel
+@using Project_Cinema_PRN231.domain.building
+@{
+    Layout = "_LayoutWithoutFooter";
+    var buildings = ViewData["buildings"] as List<BuildingDto>;
+    var sessionUserId = HttpContext.Session.GetString("userId");
+}
+<link rel="stylesheet" type="text/css" href="assets/css/style-starter.css">
+<link rel="stylesheet" href="https://npmcdn.com/flickity@2/dist/flickity.css">
+<link rel="stylesheet" type="text/css" href="assets/css/progress.css">
+<script src="js/JsBarcode.all.min.js"></script>
+ @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script src="~/js/jquery.seat-charts.min.js"></script>
+ <link rel="stylesheet" type="text/css" href="~/seat_selection/css/jquery.seat-charts.css"> *@
+
+<link rel="stylesheet" type="text/css" href="assets/css/ticket-booking.css">
+
+<!-- ..............For progress-bar............... -->
+<link rel="stylesheet" type="text/css" href="assets/css/e-ticket.css" />
+
+<link rel="stylesheet" type="text/css" href="assets/css/payment.css" />
+<link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
+
+<div class="container" id="progress-container-id">
+    <div class="row">
+        <div class="col">
+            <div class="px-0 pt-4 pb-0 mt-3 mb-3">
+                <form id="form">
+                    <ul id="progressbar" class="progressbar-class">
+                        <li id="step1" class="active">Choose building</li>
+                        <li id="step2" class="not_active">Show timing selection</li>
+                        <li id="step3" class="not_active">Seat Selection</li>
+                        <li id="step4" class="not_active">E-Ticket</li>
+                    </ul>
+                    <br>
+                    <!-- building -->
+                    <fieldset>
+                        <!-- Payment Page -->
+                        <div id="payment_div">
+                            <div class="payment-row">
+                                <div class="col-75">
+                                    <div class="payment-container">
+                                        <div class="payment-row">
+                                            <div class="col-50">
+                                                <h 3 id="payment-h3">
+                                                    Choose building</h3>
+                                                    <div class="payment-row payment">
+                                                        <div class="time-btn">
+                                                            <input hidden type="text" value="@sessionUserId" id="userId" />
+                                                            @foreach (var building in buildings)
+                                                            {
+                                                                <button class="btn btn-secondary" onclick="GetBuildingID(@building.Id, event)">@building.Name</button>
+                                                            }
+
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="button" id="confirm-btn" name="next-step" class="next-step" value="Confirm" disabled />
+                    </fieldset>
+                    <!-- show time -->
+                    <fieldset>
+                        <div id="screen-select-div">
+                            <input id="filmId" hidden />
+                            <h2>Show time Selection</h2>
+                             <input type="date" name="" id="test" onchange="dateChange(event)" /> 
+                            <div id="result-content"></div>
+
+                            <ul class="time-ul" id="showTime">
+                                    
+                            </ul>
+                        </div>
+                        <input id="showtime-btn123" type="button" name="next-step" class="next-step" value="Continue Booking"
+                               disabled />
+                    </fieldset>
+                    @* choose time seat *@
+                    <fieldset>
+
+                        <div >
+                            <iframe id="seat-sel-iframe"
+                                    style="  box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); width: 1300px; height: 550px; display: block; margin-left: auto; margin-right: auto;"
+                                    ></iframe>
+                        </div>
+
+
+                        </br>
+                        <input type="button" id="seat_choosing139" name="next-step" class="next-step" value="Proceed to Payment" />
+                        <input type="button" name="previous-step" class="previous-step" value="Back" />
+                    </fieldset>
+                    @* render ticket *@
+                    <fieldset>
+                        <h2>E-Ticket</h2>
+                        <div class="ticket-body" id="ticketBody">
+                            <div class="ticket">
+                                <div class="holes-top"></div>
+                                <div class="title">
+                                    <p class="cinema">MyShowz Entertainment</p>
+                                    <p id="movieName" class="movie-title">Movie Name</p>
+                                </div>
+                                <div class="poster">
+                                    <img id="movieImg" style="width:200px;height:200px;" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/only-god-forgives.jpg"
+                                         alt="Movie: Only God Forgives" />
+                                </div>
+                                <div class="info">
+                                    <table class="info-table ticket-table">
+                                        <tr>
+                                            <th>BUILDING<th>
+                                            <th>ROOM</th>
+                                            <th>SEAT</th>
+                                        </tr>
+                                        <tr>
+                                            <td id="buildingName" class="bigger">18</td>
+                                            <td id="roomName" class="bigger">H</td>
+                                            <td id="seat" class="bigger">24</td>
+                                        </tr>
+                                    </table>
+                                    <table class="info-table ticket-table">
+                                        <tr>
+                                            <th >PRICE</th>
+                                            <th >DATE</th>
+                                            <th >TIME</th>
+                                        </tr>
+                                        <tr>
+                                            <td id="seatPrice">RS.12.00</td>
+                                            <td id="dateBooking">4/13/21</td>
+                                            <td id="timeDuration">19:30</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="holes-lower"></div>
+                                <div class="serial">
+                                    <table class="barcode ticket-table">
+                                        <svg id="barcode"></svg>
+                                        </table>
+                                    <table class="numbers ticket-table">
+                                        
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="button" name="previous-step" class="home-page-btn" value="Browse to Home Page"
+                               onclick="location.href='Index';" />
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let prevId = "1";
+    var buildingIdSelected = 0;
+    var filmCalenderIdSelected = 0;
+    var roomIdSelected = 0;
+    window.onload = function () {
+        document.getElementById("confirm-btn").disabled = true;
+        document.getElementById("showtime-btn123").disabled = true;
+    }
+
+    function GetBuildingID(time, event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của nút
+        buildingIdSelected = time;
+        console.log("Building id: " + buildingIdSelected);
+        // Thêm các hành động khác mà bạn muốn thực hiện khi chọn thời gian
+        document.getElementById('confirm-btn').disabled = false;
+    }
+    function GetShowTimeID(time,roomId, event) {
+        event.preventDefault(); // Ngăn chặn hành vi mặc định của nút
+        filmCalenderIdSelected = time;
+        console.log("Film Calender id: " + filmCalenderIdSelected);
+        roomIdSelected = roomId;
+        console.log("Room id: " + roomId);
+        // Thêm các hành động khác mà bạn muốn thực hiện khi chọn thời gian
+        document.getElementById('showtime-btn123').disabled = false;
+        
+    }
+
+    function myFunction(id) {
+        document.getElementById(prevId).style.background = "rgb(243, 235, 235)";
+        document.getElementById(id).style.background = "#df0e62";
+        prevId = id;
+    }
+
+
+</script>
+
+<script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"></script>
+<script type="text/javascript" src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'>
+</script>
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="assets/js/theme-change.js"></script>
+
+<script src="assets/js/ticket-booking.js"></script>

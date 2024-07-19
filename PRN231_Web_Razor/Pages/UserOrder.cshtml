@@ -1,0 +1,77 @@
+﻿@page
+@model PRN231_Web_Razor.Pages.UserOrderModel
+@using Project_Cinema_PRN231.domain.orderdetail;
+
+@{
+    var orders = ViewData["orders"] as List<OrderDetailDto>;
+}
+<script src="js/JsBarcode.all.min.js"></script>
+
+<div style="margin-top:200px" class="container" id="progress-container-id">
+    <div class="ticket-body" style="display:flex;" id="ticketBody">
+        @{
+            int index = 0; // Initialize an index to keep track of the item position
+        }
+        @foreach (var item in orders)
+        {
+            <div class="ticket" style="margin:30px;">
+                <div class="holes-top"></div>
+                <div class="title">
+                    <p class="cinema">MyShowz Entertainment</p>
+                    <p id="movieName" class="movie-title">Movie name: @item.MovieName</p>
+                </div>
+                <div class="poster">
+                    <img id="movieImg" style="width:300px;height:300px;" src="@item.MovieImage" alt="Movie: Only God Forgives" />
+                </div>
+                <div class="info">
+                    <table class="info-table ticket-table" style="width:300px;">
+                        <tr>
+                            <th>BUILDING</th>
+                            <th></th>
+                            <th>ROOM</th>
+                            <th>SEAT</th>
+                        </tr>
+                        <tr>
+                            <td id="buildingName" class="bigger">@item.BuildingName</td>
+                            <th></th>
+                            <td id="roomName" class="bigger">@item.RoomName</td>
+                            <td id="seat" class="bigger">@item.Lot</td>
+                        </tr>
+                    </table>
+                    <table class="info-table ticket-table" style="width:300px;">
+                        <tr>
+                            <th>PRICE</th>
+                            <th>DATE</th>
+                            <th>TIME</th>
+                        </tr>
+                        <tr>
+                            <td id="seatPrice">@item.Price</td>
+                            <td id="dateBooking">@item.BookingDate.ToString("dd/MM/yyyy")</td>
+                            <td id="timeDuration">@item.TimeDuration</td>
+                        </tr>
+                    </table>
+                </div>
+                <input type="hidden" name="name" id="barcodeDb_@index" value="@item.BarCode" />
+                <div class="holes-lower"></div>
+                <div class="serial">
+                    <table class="barcode ticket-table">
+                        <svg id="barcode_@index"></svg>
+                    </table>
+                    <table class="numbers ticket-table">
+                    </table>
+                </div>
+                <script>
+                    var barcode = document.getElementById("barcodeDb_@index").value;
+                    JsBarcode("#barcode_@index", barcode, {
+                        width: 3,
+                        height: 30,
+                        displayValue: true
+                    });
+                </script>
+            </div>
+            index++; // Increment the index for the next item
+        }
+    </div>
+
+</div>
+

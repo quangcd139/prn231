@@ -1,0 +1,344 @@
+﻿@page
+@model Library.Pages.Admin.FilmManagementModel
+@using Project_Cinema_PRN231.domain.libraryfilm;
+@{
+    Layout = "Shared/_LayoutAdmin";
+}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Film Management</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="dashboard">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Film Management</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <section class="section">
+            <div class="card">
+                <div class="card-header">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAdd">Add a new Film</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" onclick="exportData()">Export data</button>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="table1">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Movie Name</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Director</th>
+                                <th>ReleaseYear</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.LibraryFilms)
+                            {
+                                <tr>
+                                    <td>@item.Code</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.CategoryName</td>
+                                    <td>@item.Description</td>
+                                    <td>@item.Director</td>
+                                    <td>@item.ReleaseYear</td>
+                                    <td>
+                                        <!--Modal trigger-->
+                                        <a data-toggle="modal" data-target="#modalEdit" class='sidebar-link clicking' data-categoryid="@item.CategoryId" data-filmid="@item.Id" data-code="@item.Code" data-name="@item.Name" data-trailerurl="@item.TrailerUrl" data-image="@item.Image" data-releaseyear="@item.ReleaseYear" data-director="@item.Director" data-category="@item.CategoryName" data-description="@item.Description">
+                                            <i class="fa fa-pencil"></i>
+
+                                        </a>
+                                        &nbsp;
+                                        <a data-toggle="modal" data-target="#modalView" class='sidebar-link clickingView' data-filmid="@item.Id" data-code="@item.Code" data-name="@item.Name" data-trailerurl="@item.TrailerUrl" data-image="@item.Image" data-releaseyear="@item.ReleaseYear" data-director="@item.Director" data-category="@item.CategoryName" data-description="@item.Description">
+
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <!-- End Modal trigger -->
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+
+</div>
+<div class="modal hide fade" id="modalEdit">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form asp-page="/Admin/FilmManagement" asp-page-handler="EditFilm" method="POST" enctype="multipart/form-data">
+                <input type="hidden" id="filmId" name="id">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Film</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="code" class="col-form-label">Code:</label>
+                        <input type="text" class="form-control" id="title" name="code" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="category" class="col-form-label">Category:</label>
+                        <select class="form-control" id="category" name="category">
+                            @foreach (var item in Model.Categories)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="col-form-label">Movie Name:</label>
+                        <input type="text" class="form-control" id="publisher" name="name" >
+                    </div>
+                    <div class="form-group">
+                        <label for="date" class="col-form-label">Trailer url:</label>
+                        <input type="text" class="form-control" id="trailer" name="trailerUrl">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity" class="col-form-label">ReleaseYear:</label>
+                        <input type="date" class="form-control" id="quantity" name="releaseYear">
+                    </div>
+                    <div class="form-group ">
+                        <label for="rate" class="col-form-label">Director:</label>
+                        <input type="text" class="form-control" id="rate" name="director">
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="col-form-label">Description:</label>
+                        <input type="text" class="form-control" id="description" name="description" >
+                    </div>
+                    <div class="form-group">
+                        <label for="image" class="col-form-label">Image:</label>
+                        <img class="form-control" id="image" name="image" style="height: fit-content" />
+                        <input type="file" name="newimage" id="newimage">
+                    </div>
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalView">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Film Information</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="code" class="col-form-label">Code:</label>
+                    <input type="text" class="form-control" id="titles" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="category" class="col-form-label">Category:</label>
+                    <input type="text" class="form-control" id="categorys" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-form-label">Movie Name:</label>
+                    <input type="text" class="form-control" id="publishers" name="name" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="date" class="col-form-label">Trailer url:</label>
+                    <input type="text" class="form-control" id="trailers" name="date" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="quantity" class="col-form-label">ReleaseYear:</label>
+                    <input type="date" class="form-control" id="quantitys" name="quantity" disabled>
+                </div>
+                <div class="form-group ">
+                    <label for="rate" class="col-form-label">Director:</label>
+                    <input type="text" class="form-control" id="rates" name="rate" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-form-label">Description:</label>
+                    <input type="text" class="form-control" id="descriptions" name="description" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="image" class="col-form-label">Image:</label>
+                    <img class="form-control" id="images" name="image" style="height: fit-content" />
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="modalAdd">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add a new Film</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <form asp-page="/Admin/FilmManagement" asp-page-handler="AddFilm" method="POST" enctype="multipart/form-data">
+
+                <!-- Modal body -->
+                 <div class="modal-body">
+                     <div class="form-group">
+                         <label asp-for="Film.Code" class="col-form-label"></label>
+                         <input  class="form-control" asp-for="Film.Code" required>
+                     </div>
+                     <div class="form-group">
+                         <label asp-for="Film.Category" class="col-form-label"></label>
+                         <select class="form-control" asp-for="Film.CategoryId">
+                             @foreach (var item in Model.Categories)
+                             {
+                                 <option value="@item.Id">@item.Name</option>
+                             }
+                         </select>
+                     </div>
+                     <div class="form-group">
+                         <label asp-for="Film.Name" class="col-form-label"></label>
+                        <input asp-for="Film.Name" class="form-control" required>
+                     </div>
+                     <div class="form-group">
+                        <label asp-for="Film.TrailerUrl" class="col-form-label"></label>
+                         <input  class="form-control" asp-for="Film.TrailerUrl" >
+                     </div>
+                     <div class="form-group">
+                         <label asp-for="Film.ReleaseYear" class="col-form-label"></label>
+                        <input required class="form-control" asp-for="Film.ReleaseYear">
+                     </div>
+                     
+                     
+                     <div class="form-group ">
+                         <label asp-for="Film.Director" class="col-form-label"></label>
+                        <input asp-for="Film.Director" class="form-control" required>
+                     </div>
+                     
+                     <div class="form-group">
+                         <label asp-for="Film.Description" class="col-form-label"></label>
+                        <input asp-for="Film.Description" class="form-control">
+                     </div>
+
+                    <div class="form-group">
+                        <label asp-for="Image" class="col-form-label"></label>
+                        <input asp-for="Image" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <input type="submit" value="Add" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+           
+
+        </div>
+    </div>
+</div>
+<script>
+    // Simple Datatable
+    let table1 = document.querySelector('#table1');
+    let dataTable = new simpleDatatables.DataTable(table1);
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".clicking").click(function () { // Click to only happen on announce links
+            $("#filmId").val($(this).data('filmid'));
+            $("#title").val($(this).data('code'));
+            $("#publisher").val($(this).data('name'));
+            $("#category").val($(this).data('categoryid'));
+            $("#trailer").val($(this).data('trailerurl'));
+            $("#image").attr("src", $(this).data('image'));
+            $("#quantity").val($(this).data('releaseyear'));
+            $("#rate").val($(this).data('director'));
+            $("#description").val($(this).data('description'));
+            $('#modalEdit').modal('show');
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".clickingView").click(function () { // Click to only happen on announce links
+        @*  data - filmId="@item.Id"
+            data - code="@item.Code" 
+            data - name="@item.Name"
+                data - trailerurl="@item.TrailerUrl"
+                data - image="@item.Image" 
+            data - releaseyear="@item.ReleaseYear" 
+            data - director="@item.Director" 
+            data - category="@item.CategoryName" 
+            data - description="@item.Description" > *@
+            $("#titles").val($(this).data('code'));
+            $("#publishers").val($(this).data('name'));
+            $("#categorys").val($(this).data('category'));
+            $("#trailers").val($(this).data('trailerurl'));
+            $("#images").attr("src", $(this).data('image'));
+            $("#quantitys").val($(this).data('releaseyear'));
+            $("#rates").val($(this).data('director'));
+            $("#descriptions").val($(this).data('description'));
+
+            $('#modalView').modal('show');
+        });
+    });
+</script>
+<script>
+    function exportData() {
+        fetch('/Admin/FilmManagement?handler=ExportFile')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Export failed');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'films.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Export failed:', error);
+                alert('Export failed. Please try again later.');
+            });
+    }
+</script>
